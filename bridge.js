@@ -1,7 +1,16 @@
 var osc = require('node-osc'),
     io = require('socket.io').listen(8081);
+    
+var app = require('express')();
+var http = require('http').Server(app);
 
 var oscServer, oscClient;
+
+// usando a 3000 pra servir o html
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
 
 io.sockets.on('connection', function (socket) {
   socket.on("config", function (obj) {
@@ -18,4 +27,10 @@ io.sockets.on('connection', function (socket) {
   socket.on("message", function (obj) {
     oscClient.send(obj);
   });
+});
+
+// Redireciona pro index.html
+
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
 });
